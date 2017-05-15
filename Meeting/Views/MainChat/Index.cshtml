@@ -1,0 +1,121 @@
+﻿@model  Meeting.Models.User
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/Styles/Loading.css" type="text/css" rel="stylesheet" />
+    <link href="~/Styles/Button.css" type="text/css" rel="stylesheet" />
+    <link href="~/Styles/Positions.css" type="text/css" rel="stylesheet" />
+    <link href="~/Styles/Status.css" type="text/css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-3.1.0.js"></script>
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <!--Ссылка на библиотеку SignalR -->
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <!--Ссылка на автоматически сгенерированный скрипт хаба SignalR -->
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/util.js"></script>
+
+   
+</head>
+<body>
+    <div class="header">
+        <table>
+            <tr>
+                <td style="width:405px">
+                    Тема совещания: @Model.Chat.Name <br /><br />
+                    @Model.Chat.Description
+                <td />
+
+                @if (Meeting.Helpers.UserStatusHelper.IsAdmin(Model.Status))
+                {
+                    <td>
+                        <button type="submit" name="action" id="addvieo" onclick="alert('В разработке');" value="addvieo">Видеоконфернция</button><br />
+                        <button type="submit" name="action" id="addpad" onclick="alert('В разработке');" value="addpad">Интерактивная доска</button><br />
+                        <button type="submit" name="action" id="stopchat" hidden value="stopchat">Прервать совещание</button>
+                        <button type="submit" name="action" id="activatechat" hidden value="activatechat">Возобновить совещание</button><br />
+                        <button type="submit" name="action" id="createprotocol" value="createprotocol">Протокол</button><br />                    
+                    </td>
+                }
+            </tr>
+        </table>
+    </div>
+    <div class="leftcont">
+        <div id="chatBody">
+            <div id="confirmForm" hidden>
+                <b>Ознакомьтесь с <a href="#" id="protocolhref" target="_blank">протоколом</a></b><br />
+                <a href="#" id="confirm" class="button5">Утвердить</a>
+                <a href="#" id="reject" class="button5">Отклонить</a>
+            </div>
+
+            <div id="inputForm">
+                <table>
+                    <tr>
+                        <td>
+                            <textarea rows="8" cols="50" name="text" style="resize:none;" id="message"></textarea>
+                        </td>
+                        <td>
+                            <a href="#" id="sendmessage" class="button5">Отправить</a>
+                            <br />
+                            <a href="#" id="sendmessageprot" class="button5">Отправить для протокола</a>
+                            <br />
+                            <div class="divbtn">
+                                <input type="file" name="upload" class="file" id="upload" />
+                            </div><br />
+                            
+                            <a href="#" id="addvideo" class="button5" video></a>
+                        </td>
+                        <td>              
+                            <div id="loadanim" hidden class="cssload-container">
+                                <div class="cssload-zenith"></div>
+                            </div>
+                            <label id="fileinfo" hidden>  </label>
+                            <a href="#" id="delete" hidden class="button1" data-delete></a>
+                            
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <ol id="chatcontent" class="chatcontent">
+
+            </ol>
+
+            <div  id="chatusers" style="max-height:200px; max-width:510px;  overflow-y:scroll;">
+                <p id="0"><b>Участники онлайн</b></p>
+            </div>
+        </div>
+        <input id="connectionID" type="hidden" />
+        <input id="userID" value="@Model.ID.ToString()" type="hidden" />
+        <input id="chatId" value="@Model.Chat.ID.ToString()" type="hidden" />
+        <input id="chatStatus" value="@Model.Chat.Status" type="hidden" />
+        <input id="apppath" value="@Meeting.Helpers.StringHelper.GetFileDirectoryForChat(Model.Chat.ID)" type="hidden" />
+        
+        <input id="uploadlink" value="@Url.Action("Upload", "MainChat")" type="hidden" />
+        <input id="downloadlink" value="@Url.Action("Download", "MainChat")" type="hidden" />
+        <input id="protdownloadlink" value="@Url.Action("ProtocolDownload", "MainChat")" type="hidden" />
+        <input id="protocollink" value="@Url.Action("ProtocolChanging", "MainChat")" type="hidden" />
+        <input id="crprotlink" value="@Url.Action("CreateProtocol", "MainChat")" type="hidden" />
+        <input id="addMsgToPr" value="@Url.Action("AddMessageToProtocol", "MainChat")" type="hidden" />
+        <input id="rmMsgFromPr" value="@Url.Action("RemoveMessageFromProtocol", "MainChat")" type="hidden" />
+        <input id="addAllMsgToPr" value="@Url.Action("AddAllMessagesToProtocol", "MainChat")" type="hidden" />
+        <input id="rmAllMsgFromPr" value="@Url.Action("RemoveAllMessagesFromProtocol", "MainChat")" type="hidden" />
+    </div>
+
+    
+    <div class="rightcont" id="divrightcont" hidden>
+        @Ajax.ActionLink("Включить все", "AddAllMessagesToProtocol", "MainChat", new { }, new AjaxOptions { UpdateTargetId = "divprotocol" })<br />
+        @Ajax.ActionLink("Исключить все", "RemoveAllMessagesFromProtocol", "MainChat", new { }, new AjaxOptions { UpdateTargetId = "divprotocol" })<br />
+        @Ajax.ActionLink("Обновить данные (показать все)", "ProtocolChanging", "MainChat", new { }, new AjaxOptions { UpdateTargetId = "divprotocol" })<br />
+        @Ajax.ActionLink("Показать только добавленные", "ShowAddedMessagesInProtocolPart", "MainChat", new { }, new AjaxOptions { UpdateTargetId = "divprotocol"})<br />
+        <a href="#" id="sendprotocol">Отправить на утверждение</a><br />
+        <div  id="divprotocol">
+
+        </div>
+    </div>
+
+
+</body>
+</html>

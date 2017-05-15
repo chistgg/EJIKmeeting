@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<types>
+  <type cont="image/gif">.gif</type>
+  <type cont="image/png">.png</type>
+  <type cont="image/jpeg">.jpeg</type>
+  <type cont="image/jpeg">.jpg</type>
+  <type>.bmp</type>
+  <type>.pdf</type>
+  <type>.doc</type>
+  <type>.docx</type>
+  <type>.rtf</type>
+  <type>.djvu</type>
+  <type>.txt</type>
+  <type>.ppt</type>
+  <type>.pps</type>
+  <type>.pptx</type>
+  <type>.ppsx</type>
+  <type>.xlsx</type>
+  <type>.xls</type>
+  <type>.xls</type>
+  <type>.csv</type>
+  <type>.7z</type>
+  <type>.zip</type>
+  <type>.rar</type>
+</types>

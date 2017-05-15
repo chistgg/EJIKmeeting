@@ -1,0 +1,19 @@
+﻿@model  Meeting.Models.User
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-3.1.0.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <title>@Model.Chat.Name </title>
+</head>
+<body>
+    <div>
+        Тема совещания: @Model.Chat.Name<br /><br />
+        @Model.Chat.Description <br /><br />
+        @RenderBody()
+    </div>
+</body>
+</html>

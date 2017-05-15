@@ -1,0 +1,66 @@
+﻿@model List<Meeting.Models.ViewModels.MessageProtocolView>
+
+<script src="~/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Scripts/jquery-3.1.0.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script type="text/javascript">
+
+    $('.msginpr').change(function () {
+        var self = $(this);
+        var url = "";
+        var id = self.attr('id');
+        var value = self.prop('checked');
+
+        if (value)
+            url = $('#addMsgToPr').val();
+        else
+            url = $('#rmMsgFromPr').val();
+
+        $.get(url, { mid: id });
+    });
+
+</script>
+
+<table class="table">
+    <tr>
+        <th>
+            Время
+        </th>
+        <th>
+            Автор
+        </th>
+        <th>
+            Текст сообщения
+        </th>
+        <th></th>
+        <th>
+
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr rightpart>
+        <td>
+            @Html.DisplayFor(modelItem => item.SendingTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>
+        <td>
+            @if (item.File != null) {
+                Html.ActionLink(item.File.Name, "Download", "MainChat", new { target = "_blank" });
+            }      
+        </td>
+        <td>
+            @Html.CheckBoxFor(modelItem => item.InProtocol, new { id = item.ID.ToString(), @class = "msginpr" })
+        </td>
+
+    </tr>
+}
+</table>
+
+
+
